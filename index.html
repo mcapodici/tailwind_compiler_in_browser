@@ -52,7 +52,7 @@
     const userConfig = parseCustomConfig();
     tailwindify(htmlString, customCss, userConfig).then(tw => {
       if ('error' in tw) {
-        console.log(tw.error.messageit);
+        console.log(tw.error.message);
       }
       const styleSheet = document.createElement('style');
       styleSheet.type = 'text/css';
