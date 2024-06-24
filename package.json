@@ -1,0 +1,25 @@
+{
+  "name": "esbuild",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chokidar": "^3.6.0",
+    "esbuild": "0.21.5",
+    "esbuild-plugin-inline-import": "^1.0.4"
+  },
+  "dependencies": {
+    "esbuild-plugin-polyfill-node": "^0.3.0",
+    "postcss": "^8.4.38",
+    "postcss-safe-parser": "^7.0.0",
+    "tailwindcss": "^3.4.4"
+  }
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="dist/index.js"></script>
+
+  <script type="tailwind-config">module.exports = {
+    content: [],
+    theme: {
+      extend: {},
+    },
+    plugins: [],
+  }</script>
+
+  <style type="postcss"> @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    
+    @layer components {
+    .btn-primary {
+      @apply py-2 px-5  bg-violet-500 text-white font-semibold rounded-full shadow-md hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+    }}
+    </style>
+  <div class="bg-red-200 rounded-full p-3">123</div>
+  <script>
+    function parseCustomConfig() {
+      let userConfig = {};
+
+      try {
+        let customConfig = document.querySelector('script[type="tailwind-config"]').innerText;
+
+        userConfig = eval(`(${customConfig})`) || {};
+      } catch (err) {
+        //
+      }
+
+      return userConfig;
+    }
+    const html = '<div class="bg-red-100"></div>';
+    let customCss = '';
+    //document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('style[type="postcss"]').forEach(styleTag => {
+      customCss += styleTag.innerHTML;
+    });
+    const htmlString = document.documentElement.outerHTML;
+    const userConfig = parseCustomConfig();
+    tailwindify(htmlString, customCss, userConfig).then(tw => {
+      if ('error' in tw) {
+        console.log(tw.error.messageit);
+      }
+      const styleSheet = document.createElement('style');
+      styleSheet.type = 'text/css';
+      styleSheet.innerHTML = tw.css;
+      document.head.appendChild(styleSheet);
+    });
+    //});
+  </script>
+</body>
+
+</html>
