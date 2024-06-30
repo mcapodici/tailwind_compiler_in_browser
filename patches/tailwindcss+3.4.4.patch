@@ -1,0 +1,60 @@
+diff --git a/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js b/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js
+index c47ea1a..78badf4 100644
+--- a/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js
++++ b/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js
+@@ -233,6 +233,7 @@ function extractApplyCandidates(params) {
+     ];
+ }
+ function processApply(root, context, localCache) {
++    context.errors = context.errors || [];
+     let applyCandidates = new Set();
+     // Collect all @apply rules and candidates
+     let applies = [];
+@@ -364,9 +365,9 @@ function processApply(root, context, localCache) {
+         if (apply.parent.type === "atrule") {
+             if (apply.parent.name === "screen") {
+                 let screenType = apply.parent.params;
+-                throw apply.error(`@apply is not supported within nested at-rules like @screen. We suggest you write this as @apply ${applyCandidates.map((c)=>`${screenType}:${c}`).join(" ")} instead.`);
++                context.errors.push(apply.error(`@apply is not supported within nested at-rules like @screen. We suggest you write this as @apply ${applyCandidates.map((c)=>`${screenType}:${c}`).join(" ")} instead.`));
+             }
+-            throw apply.error(`@apply is not supported within nested at-rules like @${apply.parent.name}. You can fix this by un-nesting @${apply.parent.name}.`);
++            context.errors.push(apply.error(`@apply is not supported within nested at-rules like @${apply.parent.name}. You can fix this by un-nesting @${apply.parent.name}.`));
+         }
+         for (let applyCandidate of applyCandidates){
+             if ([
+@@ -374,10 +375,10 @@ function processApply(root, context, localCache) {
+                 prefix(context, "peer")
+             ].includes(applyCandidate)) {
+                 // TODO: Link to specific documentation page with error code.
+-                throw apply.error(`@apply should not be used with the '${applyCandidate}' utility`);
++                context.errors.push(apply.error(`@apply should not be used with the '${applyCandidate}' utility`));
+             }
+             if (!applyClassCache.has(applyCandidate)) {
+-                throw apply.error(`The \`${applyCandidate}\` class does not exist. If \`${applyCandidate}\` is a custom class, make sure it is defined within a \`@layer\` directive.`);
++                context.errors.push(apply.error(`The \`${applyCandidate}\` class does not exist. If \`${applyCandidate}\` is a custom class, make sure it is defined within a \`@layer\` directive.`));
+             }
+             let rules = applyClassCache.get(applyCandidate);
+             // Verify that we can apply the class
+@@ -386,11 +387,11 @@ function processApply(root, context, localCache) {
+                     continue;
+                 }
+                 rule.walkRules(()=>{
+-                    throw apply.error([
++                    context.errors.push(apply.error([
+                         `The \`${applyCandidate}\` class cannot be used with \`@apply\` because \`@apply\` does not currently support nested CSS.`,
+                         "Rewrite the selector without nesting or configure the `tailwindcss/nesting` plugin:",
+                         "https://tailwindcss.com/docs/using-with-preprocessors#nesting"
+-                    ].join("\n"));
++                    ].join("\n")));
+                 });
+             }
+             candidates.push([
+@@ -440,7 +441,7 @@ function processApply(root, context, localCache) {
+                 nodeClasses = nodeClasses.concat(extractBaseCandidates(nodeClasses, context.tailwindConfig.separator));
+                 let intersects = parentClasses.some((selector)=>nodeClasses.includes(selector));
+                 if (intersects) {
+-                    throw node.error(`You cannot \`@apply\` the \`${applyCandidate}\` utility here because it creates a circular dependency.`);
++                    context.errors.push(node.error(`You cannot \`@apply\` the \`${applyCandidate}\` utility here because it creates a circular dependency.`));
+                 }
+                 let root = _postcss.default.root({
+                     nodes: [
