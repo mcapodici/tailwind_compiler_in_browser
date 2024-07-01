@@ -23,7 +23,7 @@ npm run build
 Example code, with detection of returned error.
 
 ```javascript
-tailwindify(htmlString, customCss, userConfig).then(tw => {
+tailwindify.compile(htmlString, customCss, userConfig).then(tw => {
     if ('error' in tw) {
         console.log(tw.error.message);
     }
@@ -34,7 +34,15 @@ tailwindify(htmlString, customCss, userConfig).then(tw => {
 });
 ```
 
-See [`index.html`](index.html) for a full example usage.
+Or just:
+
+```
+tailwindify.run()
+```
+
+While will grab the HTML in the document, and the CSS in `<style type="postcss">` and Config JS in `<script type="tailwind-config">`.
+
+See [`index.html`](index.html) for a an example usage too.
 
 
 

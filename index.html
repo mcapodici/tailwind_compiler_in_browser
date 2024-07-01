@@ -29,37 +29,7 @@
     </style>
   <div class="bg-red-200 rounded-full p-3">123</div>
   <script>
-    function parseCustomConfig() {
-      let userConfig = {};
-
-      try {
-        let customConfig = document.querySelector('script[type="tailwind-config"]').innerText;
-
-        userConfig = eval(`(${customConfig})`) || {};
-      } catch (err) {
-        //
-      }
-
-      return userConfig;
-    }
-    const html = '<div class="bg-red-100"></div>';
-    let customCss = '';
-    //document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('style[type="postcss"]').forEach(styleTag => {
-      customCss += styleTag.innerHTML;
-    });
-    const htmlString = document.documentElement.outerHTML;
-    const userConfig = parseCustomConfig();
-    tailwindify(htmlString, customCss, userConfig).then(tw => {
-      if ('error' in tw) {
-        console.log(tw.error.message);
-      }
-      const styleSheet = document.createElement('style');
-      styleSheet.type = 'text/css';
-      styleSheet.innerHTML = tw.css;
-      document.head.appendChild(styleSheet);
-    });
-    //});
+    tailwindify.run();
   </script>
 </body>
 
