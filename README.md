@@ -2,11 +2,13 @@
 
 It exposes a global function called `tailwindify.compile` that takes html, css (with @apply/@tailwind etc. support) and tailwind config and produces the compiled CSS.
 
-If there is a compilation error than nothing is generated.
+If there is a compilation error then nothing is generated. 
 
 This is because Tailwind's postcss doesn't support any kind of "if error, continue". 
 
-However the object returned will have an error field populated.
+However I patched it somewhat to avoid this problem.
+
+If there is an error, the object returned will have an error field populated.
 
 This uses `safeParser` to allow non-perfect css. However it will still generate errors for things like @apply using non-existant classes.
 
